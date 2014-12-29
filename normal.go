@@ -49,6 +49,12 @@ func (norm *Normal) getCholT() *matrix.DenseMatrix {
   return norm.cholT
 }
 
+func (norm *Normal) CacheComputations() {
+  _ = norm.getCholT()
+  _ = norm.getLogDetCov()
+  return
+}
+
 func NewNormal(mean []float64, cov *matrix.DenseMatrix) (norm Normal) {
   norm.mean = mean
   norm.cov = cov.Copy()
