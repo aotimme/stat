@@ -11,6 +11,7 @@ import (
 type Normal struct {
   mean []float64
   cov *matrix.DenseMatrix
+  invCov *matrix.DenseMatrix
   chol *matrix.DenseMatrix
   cholT *matrix.DenseMatrix
   logDetCov float64
@@ -36,6 +37,17 @@ func (norm *Normal) getChol() *matrix.DenseMatrix {
   return norm.chol
 }
 
+func (n *Normal) getInverseCovariance() *matrix.DenseMatrix {
+  if n.invCov == nil {
+    invCov, err := n.cov.Inverse()
+    if err != nil {
+      panic(err)
+    }
+    n.invCov = invCov
+  }
+  return n.invCov
+}
+
 func (norm *Normal) getCholT() *matrix.DenseMatrix {
   if norm.cholT == nil {
     chol := norm.getChol()
@@ -58,7 +70,7 @@ func (norm *Normal) CacheComputations() {
 func NewNormal(mean []float64, cov *matrix.DenseMatrix) (norm Normal) {
   norm.mean = mean
   norm.cov = cov.Copy()
-  norm.chol, norm.cholT = nil, nil
+  norm.invCov, norm.chol, norm.cholT = nil, nil, nil
   return
 }
 
@@ -88,10 +100,7 @@ func (norm *Normal) Sample(n int, r *rand.Rand) (s *matrix.DenseMatrix) {
 
 func (n *Normal) LogPdf(x []float64) float64 {
   p := len(n.mean)
-  covInv, err := n.cov.Inverse()
-  if err != nil {
-    panic(err)
-  }
+  covInv := n.getInverseCovariance()
   quad := 0.0
   for i := 0; i < p; i++ {
     for j := 0; j < p; j++ {
