@@ -48,16 +48,15 @@ func LogGamma(x float64) float64 {
   }
 }
 
-func Choose(n, k int) int {
+func Choose(n, k int64) int64 {
   bigIntPtr := &big.Int{}
-  bigIntPtr.Binomial(int64(n), int64(k))
-  z64 := bigIntPtr.Int64()
-  return int(z64)
+  bigIntPtr.Binomial(n, k)
+  return bigIntPtr.Int64()
 }
 
-func Lchoose(n, k int) float64 {
+func Lchoose(n, k int64) float64 {
   bigIntPtr := &big.Int{}
-  bigIntPtr.Binomial(int64(n), int64(k))
-  z64 := bigIntPtr.Int64()
-  return math.Log(float64(z64))
+  bigIntPtr.Binomial(n, k)
+  z := bigIntPtr.Int64()
+  return math.Log(float64(z))
 }

@@ -74,7 +74,12 @@ func NewNormal(mean []float64, cov *matrix.DenseMatrix) (norm Normal) {
   return
 }
 
-func (norm *Normal) Sample(n int, r *rand.Rand) (s *matrix.DenseMatrix) {
+func (norm *Normal) Sample(r *rand.Rand) []float64 {
+  s := norm.SampleMultiple(1, r)
+  return s.RowCopy(0)
+}
+
+func (norm *Normal) SampleMultiple(n int, r *rand.Rand) (s *matrix.DenseMatrix) {
   p := len(norm.mean)
   ss := make([]float64, n * p)
   for i := 0; i < len(ss); i++ {

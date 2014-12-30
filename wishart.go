@@ -22,7 +22,7 @@ func NewWishart(sigma *matrix.DenseMatrix, nu int) (wish Wishart) {
 }
 
 func (wish *Wishart) Sample(r *rand.Rand) (sigma *matrix.DenseMatrix) {
-  X := wish.norm.Sample(wish.nu, r)
+  X := wish.norm.SampleMultiple(wish.nu, r)
   XT := X.Transpose()
   sigma, err := XT.TimesDense(X)
   if err != nil {
@@ -106,7 +106,6 @@ func (niw *NormalInverseWishart) Sample(r *rand.Rand) (mean []float64, cov *matr
   covMean := cov.Copy()
   covMean.Scale(1.0 / niw.lambda)
   norm := NewNormal(niw.mean, covMean)
-  meanMat := norm.Sample(1, r)
-  mean = meanMat.RowCopy(0)
+  mean = norm.Sample(r)
   return mean, cov
 }

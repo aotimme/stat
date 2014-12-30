@@ -14,7 +14,7 @@ func NewBernoulli(p float64) (bern Bernoulli) {
   return
 }
 
-func (bern *Bernoulli) Sample(r *rand.Rand) (z int) {
+func (bern *Bernoulli) Sample(r *rand.Rand) (z int64) {
   u := NextUniform(r)
   if u < bern.p {
     z = 1
@@ -24,7 +24,7 @@ func (bern *Bernoulli) Sample(r *rand.Rand) (z int) {
   return
 }
 
-func (bern *Bernoulli) Pdf(x int) float64 {
+func (bern *Bernoulli) Pdf(x int64) float64 {
   if x == 1 {
     return bern.p
   } else if x == 0 {
@@ -34,7 +34,7 @@ func (bern *Bernoulli) Pdf(x int) float64 {
   }
 }
 
-func (bern *Bernoulli) LogPdf(x int) float64 {
+func (bern *Bernoulli) LogPdf(x int64) float64 {
   if x == 1 {
     return math.Log(bern.p)
   } else if x == 0 {

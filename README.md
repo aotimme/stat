@@ -12,8 +12,8 @@ following methods
 
 * `NewDistribution`
 * `Sample`
-* `LogPdf`
 * `Pdf`
+* `LogPdf`
 
 Note that these are all still WIP, either done when I have the chance or when I
 to implement a new function.

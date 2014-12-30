@@ -23,14 +23,14 @@ func NewCategorical(p []float64) (cat Categorical) {
   return
 }
 
-func (cat *Categorical) Sample(r *rand.Rand) (z int) {
+func (cat *Categorical) Sample(r *rand.Rand) (z int64) {
   u := NextUniform(r)
   sum := cat.p[z]
   for sum < u {
     z++
     sum += cat.p[z]
   }
-  if z == len(cat.p) {
+  if z == int64(len(cat.p)) {
     fmt.Printf("UH-OH! u = %v\n", u)
   }
   return
