@@ -1,6 +1,7 @@
 package stat
 
 import (
+  "math"
   "math/rand"
 )
 
@@ -21,4 +22,24 @@ func (bern *Bernoulli) Sample(r *rand.Rand) (z int) {
     z = 0
   }
   return
+}
+
+func (bern *Bernoulli) Pdf(x int) float64 {
+  if x == 1 {
+    return bern.p
+  } else if x == 0 {
+    return 1.0 - bern.p
+  } else {
+    return 0.0
+  }
+}
+
+func (bern *Bernoulli) LogPdf(x int) float64 {
+  if x == 1 {
+    return math.Log(bern.p)
+  } else if x == 0 {
+    return math.Log(1.0 - bern.p)
+  } else {
+    return math.Inf(-1)
+  }
 }

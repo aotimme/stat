@@ -3,6 +3,7 @@ package stat
 import (
   "math"
   "math/rand"
+  "math/big"
 
   "github.com/skelterjohn/go.matrix"
 )
@@ -45,4 +46,18 @@ func LogGamma(x float64) float64 {
   } else {
     return -lgamma
   }
+}
+
+func Choose(n, k int) int {
+  bigIntPtr := &big.Int{}
+  bigIntPtr.Binomial(int64(n), int64(k))
+  z64 := bigIntPtr.Int64()
+  return int(z64)
+}
+
+func Lchoose(n, k int) float64 {
+  bigIntPtr := &big.Int{}
+  bigIntPtr.Binomial(int64(n), int64(k))
+  z64 := bigIntPtr.Int64()
+  return math.Log(float64(z64))
 }
