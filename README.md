@@ -12,11 +12,13 @@ following methods
 
 * `NewDistribution`
 * `Sample`
-* `Pdf`
-* `LogPdf`
+* `Density`
+* `LogDensity`
 
 Note that these are all still WIP, either done when I have the chance or when I
-to implement a new function.
+to implement a new function. Also, I understand that the discrete distributions
+should really have probability mass functions, but for the sake of consistency
+I still use "Density".
 
 
 N.B.

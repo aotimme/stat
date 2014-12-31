@@ -1,6 +1,7 @@
 package stat
 
 import (
+  "math"
   "math/rand"
   "fmt"
 )
@@ -34,4 +35,18 @@ func (cat *Categorical) Sample(r *rand.Rand) (z int64) {
     fmt.Printf("UH-OH! u = %v\n", u)
   }
   return
+}
+
+func (cat *Categorical) Density(x int64) float64 {
+  if x < 0 || x >= int64(len(cat.p)) {
+    return 0.0
+  }
+  return cat.p[int(x)]
+}
+
+func (cat *Categorical) LogDensity(x int64) float64 {
+  if x < 0 || x >= int64(len(cat.p)) {
+    return math.Inf(-1)
+  }
+  return math.Log(cat.p[int(x)])
 }

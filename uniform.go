@@ -20,14 +20,14 @@ func (unif *Uniform) Sample(r *rand.Rand) float64 {
   return u * (unif.b - unif.a) + unif.a
 }
 
-func (unif *Uniform) Pdf(x float64) float64 {
+func (unif *Uniform) Density(x float64) float64 {
   if x < unif.a || x > unif.b {
     return 0.0
   }
   return 1.0 / (unif.b - unif.a)
 }
 
-func (unif *Uniform) LogPdf(x float64) float64 {
+func (unif *Uniform) LogDensity(x float64) float64 {
   if x < unif.a || x > unif.b {
     return math.Inf(-1)
   }

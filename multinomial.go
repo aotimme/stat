@@ -1,6 +1,7 @@
 package stat
 
 import (
+  "math"
   "math/rand"
 )
 
@@ -20,6 +21,25 @@ func (mult *Multinomial) Sample(r *rand.Rand) (s []float64) {
   for i := int64(0); i < mult.n; i++ {
     idx := mult.cat.Sample(r)
     s[idx]++
+  }
+  return
+}
+
+func (mult *Multinomial) Density(x []int64) (d float64) {
+  return math.Exp(mult.LogDensity(x))
+}
+
+func (mult *Multinomial) LogDensity(x []int64) (d float64) {
+  sum := int64(0)
+  for _, xx := range x {
+    sum += xx
+  }
+  d = LogGamma(float64(sum) + 1.0)
+  for _, xx := range x {
+    d -= LogGamma(float64(xx) + 1.0)
+  }
+  for i, xx := range x {
+    d += float64(xx) * math.Log(mult.cat.p[i])
   }
   return
 }

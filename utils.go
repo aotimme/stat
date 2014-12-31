@@ -48,6 +48,16 @@ func LogGamma(x float64) float64 {
   }
 }
 
+// http://en.wikipedia.org/wiki/Multivariate_gamma_function
+func LogMvGamma(x float64, p int64) (lmvgamma float64) {
+  pf := float64(p)
+  lmvgamma = (pf * (pf - 1.0)) / 4.0 * math.Log(math.Pi)
+  for i := int64(0); i < p; i++ {
+    lmvgamma += LogGamma(x + (1.0 - float64(i)/2.0))
+  }
+  return
+}
+
 func Choose(n, k int64) int64 {
   bigIntPtr := &big.Int{}
   bigIntPtr.Binomial(n, k)
@@ -55,8 +65,8 @@ func Choose(n, k int64) int64 {
 }
 
 func Lchoose(n, k int64) float64 {
-  bigIntPtr := &big.Int{}
-  bigIntPtr.Binomial(n, k)
-  z := bigIntPtr.Int64()
-  return math.Log(float64(z))
+  nn := float64(n)
+  kk := float64(k)
+  nk := float64(n + k)
+  return LogGamma(nk) - LogGamma(nn) - LogGamma(kk)
 }

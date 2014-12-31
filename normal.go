@@ -103,7 +103,7 @@ func (norm *Normal) SampleMultiple(n int, r *rand.Rand) (s *matrix.DenseMatrix) 
   return
 }
 
-func (n *Normal) LogPdf(x []float64) float64 {
+func (n *Normal) LogDensity(x []float64) float64 {
   p := len(n.mean)
   covInv := n.getInverseCovariance()
   quad := 0.0
@@ -113,4 +113,8 @@ func (n *Normal) LogPdf(x []float64) float64 {
     }
   }
   return -0.5 * (float64(p) * math.Log(2 * math.Pi) + n.getLogDetCov() + quad)
+}
+
+func (n *Normal) Density(x []float64) float64 {
+  return math.Exp(n.LogDensity(x))
 }

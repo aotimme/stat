@@ -24,10 +24,10 @@ func (exp *Exponential) Sample(r *rand.Rand) float64 {
   return s / exp.lambda
 }
 
-func (exp *Exponential) LogPdf(x float64) float64 {
+func (exp *Exponential) LogDensity(x float64) float64 {
   return math.Log(exp.lambda) - exp.lambda * x
 }
 
-func (exp *Exponential) Pdf(x float64) float64 {
-  return math.Exp(exp.LogPdf(x))
+func (exp *Exponential) Density(x float64) float64 {
+  return math.Exp(exp.LogDensity(x))
 }

@@ -24,7 +24,7 @@ func (bern *Bernoulli) Sample(r *rand.Rand) (z int64) {
   return
 }
 
-func (bern *Bernoulli) Pdf(x int64) float64 {
+func (bern *Bernoulli) Density(x int64) float64 {
   if x == 1 {
     return bern.p
   } else if x == 0 {
@@ -34,7 +34,7 @@ func (bern *Bernoulli) Pdf(x int64) float64 {
   }
 }
 
-func (bern *Bernoulli) LogPdf(x int64) float64 {
+func (bern *Bernoulli) LogDensity(x int64) float64 {
   if x == 1 {
     return math.Log(bern.p)
   } else if x == 0 {

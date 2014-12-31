@@ -51,10 +51,14 @@ func (dir *Dirichlet) getLogNormalizer() float64 {
   return dir.logNormalizer
 }
 
-func (dir *Dirichlet) LogPdf(x []float64) (logpdf float64) {
+func (dir *Dirichlet) LogDensity(x []float64) (logpdf float64) {
   for i, xx := range x {
     logpdf += (dir.alpha[i] - 1.0) * math.Log(xx)
   }
   logpdf -= dir.logNormalizer
   return
+}
+
+func (dir *Dirichlet) Density(x []float64) float64 {
+  return math.Exp(dir.LogDensity(x))
 }

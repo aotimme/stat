@@ -1,11 +1,11 @@
 package stat
 
 import (
-  "github.com/skelterjohn/go.matrix"
-  //"github.com/gonum/matrix/mat64"
-  //"errors"
+  "math"
   "math/rand"
   "fmt"
+
+  "github.com/skelterjohn/go.matrix"
 )
 
 
@@ -39,73 +39,35 @@ func (wish *Wishart) Sample(r *rand.Rand) (sigma *matrix.DenseMatrix) {
   return
 }
 
-type InverseWishart struct {
-  wish Wishart
-}
+func (wish *Wishart) LogDensity(X *matrix.DenseMatrix) (d float64) {
+  n, p := wish.nu, len(wish.norm.mean)
+  nf, pf := float64(n), float64(p)
 
-func NewInverseWishart(sigma *matrix.DenseMatrix, nu int) (iwish InverseWishart) {
-  sigmaInv, err := sigma.Inverse()
+  // numerator:
+  // |X|^{(n-p-1)/2}
+  d = (nf - pf - 1.0) * LogDet(X) / 2.0
+  covInv := wish.norm.getInverseCovariance()
+  // exp(-V^{-1} X / 2)
+  tmp, err := covInv.TimesDense(X)
   if err != nil {
+    // could also return -Inf...
     panic(err)
   }
-
-  // ensure symmetry (inverse doesn't always maintain the symmetry, although max difference 1e-18, so close...)
-  p := sigmaInv.Rows()
-  for i := 0; i < p; i++ {
-    for j := i+1; j < p; j++ {
-      if sigmaInv.Get(i, j) != sigmaInv.Get(j, i) {
-        sigmaInv.Set(j, i, sigmaInv.Get(i, j))
-      }
-    }
+  for i := 0; i < tmp.Rows(); i++ {
+    d += tmp.Get(i, i) / 2.0
   }
 
-  iwish.wish = NewWishart(sigmaInv, nu)
+  // denominator:
+  // 2^{np/2}
+  d -= nf * pf * math.Log(2) / 2.0
+  // |V|^{n/2}
+  d -= nf * wish.norm.getLogDetCov() / 2.0
+  // \Gamma_p(n/2)
+  d -= LogMvGamma(nf / 2.0, int64(p))
+
   return
 }
 
-func (iwish *InverseWishart) Sample(r *rand.Rand) *matrix.DenseMatrix {
-  s := iwish.wish.Sample(r)
-  inv, err := s.Inverse()
-
-  if err != nil {
-    fmt.Printf("Uh-oh. Matrix = %v\n", s)
-    fmt.Printf("nu = %v\n", iwish.wish.nu)
-    fmt.Printf("cov = %v\n", iwish.wish.norm.cov)
-    fmt.Printf("det(cov) = %v\n", iwish.wish.norm.cov.Det())
-    panic(err)
-  }
-
-  // ensure symmetry (inverse doesn't always maintain the symmetry, although max difference 1e-18, so close...)
-  p := inv.Rows()
-  for i := 0; i < p; i++ {
-    for j := i+1; j < p; j++ {
-      if inv.Get(i, j) != inv.Get(j, i) {
-        inv.Set(j, i, inv.Get(i, j))
-      }
-    }
-  }
-
-  return inv
-}
-
-type NormalInverseWishart struct {
-  iwish InverseWishart
-  mean []float64
-  lambda float64
-}
-
-func NewNormalInverseWishart(mean []float64, lambda float64, sigma *matrix.DenseMatrix, nu int) (niw NormalInverseWishart) {
-  niw.iwish = NewInverseWishart(sigma, nu)
-  niw.mean = mean
-  niw.lambda = lambda
-  return
-}
-
-func (niw *NormalInverseWishart) Sample(r *rand.Rand) (mean []float64, cov *matrix.DenseMatrix) {
-  cov = niw.iwish.Sample(r)
-  covMean := cov.Copy()
-  covMean.Scale(1.0 / niw.lambda)
-  norm := NewNormal(niw.mean, covMean)
-  mean = norm.Sample(r)
-  return mean, cov
+func (wish *Wishart) Density(X *matrix.DenseMatrix) float64 {
+  return math.Exp(wish.LogDensity(X))
 }
