@@ -23,7 +23,7 @@ func (niw *NormalInverseWishart) Sample(r *rand.Rand) (mean []float64, cov *matr
   cov = niw.iwish.Sample(r)
   covMean := cov.Copy()
   covMean.Scale(1.0 / niw.lambda)
-  norm := NewNormal(niw.mean, covMean)
+  norm := NewMVNormal(niw.mean, covMean)
   mean = norm.Sample(r)
   return mean, cov
 }

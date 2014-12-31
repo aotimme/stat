@@ -10,13 +10,13 @@ import (
 
 
 type Wishart struct {
-  norm Normal
+  norm MVNormal
   nu int
 }
 
 func NewWishart(sigma *matrix.DenseMatrix, nu int) (wish Wishart) {
   p := sigma.Rows()
-  wish.norm = NewNormal(make([]float64, p), sigma)
+  wish.norm = NewMVNormal(make([]float64, p), sigma)
   wish.nu = nu
   return
 }
