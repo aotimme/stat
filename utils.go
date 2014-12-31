@@ -17,6 +17,15 @@ func NextUniform(r *rand.Rand) (u float64) {
   return
 }
 
+func NextNormal(r *rand.Rand) (n float64) {
+  if r != nil {
+    n = r.NormFloat64()
+  } else {
+    n = rand.NormFloat64()
+  }
+  return
+}
+
 func LogDet(m *matrix.DenseMatrix) (logdet float64) {
   // NOTE: stabler version of `math.Log(m.Det())` (which unfortunately is faster)
   //logdet = math.Log(m.Det())
