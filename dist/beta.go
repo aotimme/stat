@@ -1,4 +1,4 @@
-package stat
+package dist
 
 import (
   "math/rand"
