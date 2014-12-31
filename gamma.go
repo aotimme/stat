@@ -54,12 +54,7 @@ func (gamma *Gamma) Sample(r *rand.Rand) float64 {
 }
 
 func (g *Gamma) LogDensity(x float64) float64 {
-  lgamma, sign := math.Lgamma(g.alpha)
-  if sign == 1 {
-    return g.alpha * math.Log(g.beta) - lgamma + (g.alpha - 1) * math.Log(x) - g.beta * x
-  } else {
-    return g.alpha * math.Log(g.beta) + lgamma + (g.alpha - 1) * math.Log(x) - g.beta * x
-  }
+  return g.alpha * math.Log(g.beta) - LogGamma(g.alpha) + (g.alpha - 1) * math.Log(x) - g.beta * x
 }
 
 func (g *Gamma) Density(x float64) float64 {
