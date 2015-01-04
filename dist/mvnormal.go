@@ -68,7 +68,8 @@ func (norm *MVNormal) CacheComputations() {
 }
 
 func NewMVNormal(mean []float64, cov *matrix.DenseMatrix) (norm MVNormal) {
-  norm.mean = mean
+  norm.mean = make([]float64, len(mean))
+  copy(norm.mean, mean)
   norm.cov = cov.Copy()
   norm.invCov, norm.chol, norm.cholT = nil, nil, nil
   return
