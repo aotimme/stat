@@ -61,7 +61,8 @@ func (self *KMeans) Cluster(X [][]float64, r *rand.Rand) (assign []int) {
 
   // KMeans++ initialization
   centroidIdx := make([]int, self.k)
-  centroidIdx[0] = int(float64(n) * r.Float64())
+  unif := dist.NewUniform(0.0, float64(n))
+  centroidIdx[0] = int(unif.Sample(r))
   for j := 1; j < self.k; j++ {
     dists := make([]float64, n)
     for i, x := range X {
