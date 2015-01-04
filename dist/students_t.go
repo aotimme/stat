@@ -12,7 +12,7 @@ type StudentsT struct {
 
 func NewStudentsT(dof float64) (t StudentsT) {
   t.dof = dof
-  t.gam = NewGamma(t.dof / 2.0, 2.0)
+  t.gam = NewGamma(t.dof / 2.0, 1.0 / 2.0)
   return
 }
 
