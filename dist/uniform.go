@@ -16,7 +16,7 @@ func NewUniform(a, b float64) (unif Uniform) {
 }
 
 func (unif *Uniform) Sample(r *rand.Rand) float64 {
-  u := NextUniform(r)
+  u := uniform(r)
   return u * (unif.b - unif.a) + unif.a
 }
 

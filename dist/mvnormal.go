@@ -83,7 +83,7 @@ func (norm *MVNormal) SampleMultiple(n int, r *rand.Rand) (s *matrix.DenseMatrix
   p := len(norm.mean)
   ss := make([]float64, n * p)
   for i := 0; i < len(ss); i++ {
-    ss[i] = NextNormal(r)
+    ss[i] = stdnormal(r)
   }
   X := matrix.MakeDenseMatrix(ss, n, p)
   cholT := norm.getCholT()

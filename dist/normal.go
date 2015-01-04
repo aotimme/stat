@@ -17,7 +17,7 @@ func NewNormal(mean, variance float64) (n Normal) {
 }
 
 func (n *Normal) Sample(r *rand.Rand) float64 {
-  return NextNormal(r) * math.Sqrt(n.variance) + n.mean
+  return stdnormal(r) * math.Sqrt(n.variance) + n.mean
 }
 
 func (n *Normal) LogDensity(x float64) float64 {

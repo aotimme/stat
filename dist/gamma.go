@@ -33,7 +33,7 @@ func (gamma *Gamma) Sample(r *rand.Rand) float64 {
   p := 1.0 / (2 - math.Exp(-s))
   var x, y float64
   for i := 1; ; i++ {
-    u := NextUniform(r)
+    u := uniform(r)
 
     if u > p {
       var e float64
@@ -45,7 +45,7 @@ func (gamma *Gamma) Sample(r *rand.Rand) float64 {
       x = a - b*math.Log(u/p)
       y = x - a
     }
-    u2 := NextUniform(r)
+    u2 := uniform(r)
     if math.Log(u2) <= a * math.Log(d * x) - x + y / b + c {
       break
     }

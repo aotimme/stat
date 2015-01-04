@@ -15,7 +15,7 @@ func NewBernoulli(p float64) (bern Bernoulli) {
 }
 
 func (bern *Bernoulli) Sample(r *rand.Rand) (z int64) {
-  u := NextUniform(r)
+  u := uniform(r)
   if u < bern.p {
     z = 1
   } else {

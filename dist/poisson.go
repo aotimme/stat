@@ -16,10 +16,10 @@ func NewPoisson(lambda float64) (poisson Poisson) {
 
 func (poisson *Poisson) Sample(r *rand.Rand) int64 {
   l := math.Exp(-poisson.lambda)
-  p, k := NextUniform(r), 0
+  p, k := uniform(r), 0
   for p > l {
     k++
-    p *= NextUniform(r)
+    p *= uniform(r)
   }
   return int64(k)
 }

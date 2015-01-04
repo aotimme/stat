@@ -25,7 +25,7 @@ func NewCategorical(p []float64) (cat Categorical) {
 }
 
 func (cat *Categorical) Sample(r *rand.Rand) (z int64) {
-  u := NextUniform(r)
+  u := uniform(r)
   sum := cat.p[z]
   for sum < u {
     z++
