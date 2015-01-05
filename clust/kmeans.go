@@ -52,10 +52,7 @@ func min(x []float64) float64 {
   return x[minidx(x)]
 }
 
-func (self *KMeans) Cluster(X [][]float64, r *rand.Rand) (assign []int) {
-  epsilon := 1e-6
-  maxIters := 200
-
+func (self *KMeans) Initialize(X [][]float64, r *rand.Rand) (assign []int) {
   n := len(X)
   p := len(X[0])
 
@@ -81,29 +78,31 @@ func (self *KMeans) Cluster(X [][]float64, r *rand.Rand) (assign []int) {
   }
 
   assign = make([]int, n)
+
+  totalSqDist := 0.0
+  for i, x := range X {
+    dists := make([]float64, self.k)
+    for j, centroid := range self.centroids {
+      dists[j] = euclideansq(x, centroid)
+    }
+    assign[i] = minidx(dists)
+    totalSqDist += dists[assign[i]]
+  }
+
+  return
+}
+
+func (self *KMeans) Cluster(X [][]float64, r *rand.Rand) (assign []int) {
+  epsilon := 1e-6
+  maxIters := 200
+
+  p := len(X[0])
+
+  assign = self.Initialize(X, r)
+
   iter := 0
   prevTotalSqDist := 0.0
   for {
-
-    // assignments
-    totalSqDist := 0.0
-    for i, x := range X {
-      dists := make([]float64, self.k)
-      for j, centroid := range self.centroids {
-        dists[j] = euclideansq(x, centroid)
-      }
-      assign[i] = minidx(dists)
-      totalSqDist += dists[assign[i]]
-    }
-
-    fmt.Printf("Iteration %d: %f\n", iter + 1, totalSqDist)
-
-    if iter > 0 {
-      if prevTotalSqDist - totalSqDist < epsilon {
-        break
-      }
-    }
-    prevTotalSqDist = totalSqDist
 
     // reset centroids
     for _, centroid := range self.centroids {
@@ -124,6 +123,26 @@ func (self *KMeans) Cluster(X [][]float64, r *rand.Rand) (assign []int) {
         self.centroids[i][j] /= float64(nk[i])
       }
     }
+
+    // assignments
+    totalSqDist := 0.0
+    for i, x := range X {
+      dists := make([]float64, self.k)
+      for j, centroid := range self.centroids {
+        dists[j] = euclideansq(x, centroid)
+      }
+      assign[i] = minidx(dists)
+      totalSqDist += dists[assign[i]]
+    }
+
+    fmt.Printf("Iteration %d: %f\n", iter + 1, totalSqDist)
+
+    if iter > 0 {
+      if prevTotalSqDist - totalSqDist < epsilon {
+        break
+      }
+    }
+    prevTotalSqDist = totalSqDist
 
     iter++
     if iter > maxIters {
