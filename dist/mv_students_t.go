@@ -47,7 +47,7 @@ func (mvt *MVStudentsT) LogDensity(x []float64) float64 {
     }
   }
   norm := LogGamma((mvt.dof + pf) / 2) - LogGamma(mvt.dof / 2) - pf * math.Log(mvt.dof) / 2 - pf * math.Log(math.Pi) / 2 - mvt.mvnorm.getLogDetCov() / 2
-  return norm + (mvt.dof + pf) / 2 * math.Log(1.0 + quad / mvt.dof)
+  return norm - (mvt.dof + pf) / 2 * math.Log(1.0 + quad / mvt.dof)
 }
 
 func (mvt *MVStudentsT) Density(x []float64) float64 {
