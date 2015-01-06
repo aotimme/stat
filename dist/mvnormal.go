@@ -14,14 +14,22 @@ type MVNormal struct {
   invCov *matrix.DenseMatrix
   chol *matrix.DenseMatrix
   cholT *matrix.DenseMatrix
+  hasComputedLogDetCov bool
   logDetCov float64
 }
 
 func (norm *MVNormal) getLogDetCov() float64 {
-  if norm.logDetCov == 0.0 {
+  if !norm.hasComputedLogDetCov {
     norm.logDetCov = LogDet(norm.cov)
+    norm.hasComputedLogDetCov = true
   }
   return norm.logDetCov
+}
+
+func (norm *MVNormal) clearCache() {
+  norm.invCov, norm.chol, norm.cholT = nil, nil, nil
+  norm.hasComputedLogDetCov = false
+  norm.logDetCov = 0.0
 }
 
 func (norm *MVNormal) getChol() *matrix.DenseMatrix {
@@ -71,6 +79,7 @@ func NewMVNormal(mean []float64, cov *matrix.DenseMatrix) (norm MVNormal) {
   norm.mean = make([]float64, len(mean))
   copy(norm.mean, mean)
   norm.cov = cov.Copy()
+  norm.hasComputedLogDetCov = false
   norm.invCov, norm.chol, norm.cholT = nil, nil, nil
   return
 }
@@ -114,4 +123,69 @@ func (n *MVNormal) LogDensity(x []float64) float64 {
 
 func (n *MVNormal) Density(x []float64) float64 {
   return math.Exp(n.LogDensity(x))
+}
+
+
+func (n *MVNormal) Scale(a float64) {
+  p := len(n.mean)
+  for i := 0; i < p; i++ {
+    n.mean[i] *= a
+  }
+  n.cov.Scale(a*a)
+  n.clearCache()
+}
+
+func (n *MVNormal) Shift(b float64) {
+  p := len(n.mean)
+  for i := 0; i < p; i++ {
+    n.mean[i] += b
+  }
+}
+
+
+func (n *MVNormal) AddMVNormal(norm *MVNormal) {
+  p := len(n.mean)
+  for i := 0; i < p; i++ {
+    n.mean[i] += norm.mean[i]
+  }
+  if err := n.cov.AddDense(norm.cov); err != nil {
+    panic(err)
+  }
+  n.clearCache()
+}
+
+func (n *MVNormal) TimesDensity(norm *MVNormal) {
+  p := len(n.mean)
+
+  nInvCov := n.getInverseCovariance()
+  normInvCov := norm.getInverseCovariance()
+
+  mu := make([]float64, p)
+  for i := 0; i < p; i++ {
+    for j := 0; j < p; j++ {
+      mu[i] += nInvCov.Get(i, j) * n.mean[j] + normInvCov.Get(i, j) * norm.mean[j]
+    }
+  }
+
+  err := nInvCov.AddDense(normInvCov)
+  if err != nil {
+    panic(err)
+  }
+
+  for i := 0; i < p; i++ {
+    n.mean[i] = 0.0
+  }
+  for i := 0; i < p; i++ {
+    for j := 0; j < p; j++ {
+      n.mean[i] += nInvCov.Get(i, j) * mu[j]
+    }
+  }
+
+  n.cov, err = nInvCov.Inverse()
+  if err != nil {
+    panic(err)
+  }
+
+  n.clearCache()
+  n.invCov = nInvCov
 }
