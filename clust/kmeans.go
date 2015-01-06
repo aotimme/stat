@@ -1,12 +1,32 @@
 package clust
 
 import (
-  "fmt"
+  //"fmt"
   "math"
   "math/rand"
 
   "github.com/aotimme/stat/dist"
 )
+
+func euclideansq(x []float64, y []float64) (val float64) {
+  for i, _ := range x {
+    val += (y[i] - x[i]) * (y[i] - x[i])
+  }
+  return
+}
+
+func euclidean(x []float64, y[]float64) float64 {
+  return math.Sqrt(euclideansq(x, y))
+}
+
+func min(x []float64) (idx int, val float64) {
+  for i := 1; i < len(x); i++ {
+    if x[i] < x[idx] {
+      idx = i
+    }
+  }
+  return idx, x[idx]
+}
 
 type KMeans struct {
   k int
@@ -28,30 +48,6 @@ func (self *KMeans) SetCentroids(centroids [][]float64) {
   self.k = len(centroids)
 }
 
-func euclideansq(x []float64, y []float64) (val float64) {
-  for i, _ := range x {
-    val += (y[i] - x[i]) * (y[i] - x[i])
-  }
-  return
-}
-
-func euclidean(x []float64, y[]float64) float64 {
-  return math.Sqrt(euclideansq(x, y))
-}
-
-func minidx(x []float64) (idx int) {
-  for i := 1; i < len(x); i++ {
-    if x[i] < x[idx] {
-      idx = i
-    }
-  }
-  return
-}
-
-func min(x []float64) float64 {
-  return x[minidx(x)]
-}
-
 func (self *KMeans) Initialize(X [][]float64, r *rand.Rand) (assign []int) {
   n := len(X)
   p := len(X[0])
@@ -67,7 +63,7 @@ func (self *KMeans) Initialize(X [][]float64, r *rand.Rand) (assign []int) {
       for l := 0; l < j; l++ {
         centroidDists[l] = euclidean(x, X[centroidIdx[l]])
       }
-      dists[i] = min(centroidDists)
+      _,  dists[i] = min(centroidDists)
     }
     cat := dist.NewCategorical(dists)
     centroidIdx[j] = int(cat.Sample(r))
@@ -85,7 +81,7 @@ func (self *KMeans) Initialize(X [][]float64, r *rand.Rand) (assign []int) {
     for j, centroid := range self.centroids {
       dists[j] = euclideansq(x, centroid)
     }
-    assign[i] = minidx(dists)
+    assign[i], _ = min(dists)
     totalSqDist += dists[assign[i]]
   }
 
@@ -131,12 +127,11 @@ func (self *KMeans) Cluster(X [][]float64, r *rand.Rand) (assign []int) {
       for j, centroid := range self.centroids {
         dists[j] = euclideansq(x, centroid)
       }
-      assign[i] = minidx(dists)
+      assign[i], _ = min(dists)
       totalSqDist += dists[assign[i]]
     }
 
-    fmt.Printf("Iteration %d: %f\n", iter + 1, totalSqDist)
-
+    //fmt.Printf("Iteration %d: %f\n", iter + 1, totalSqDist)
     if iter > 0 {
       if prevTotalSqDist - totalSqDist < epsilon {
         break
