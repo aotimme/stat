@@ -44,3 +44,9 @@ func EllipticalSlice(x []float64, logLik func([]float64) float64, mu []float64, 
     theta = angleUnif.Sample(r)
   }
 }
+
+// TODO
+// * GeneralizedEllipticalSlice:
+//     Algorightm 2 in http://arxiv.org/pdf/1210.7477v2.pdf
+// * Metropolis
+// * Metropolis-Hastings
