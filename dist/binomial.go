@@ -3,6 +3,8 @@ package dist
 import (
   "math"
   "math/rand"
+
+  "github.com/aotimme/stat/utils"
 )
 
 type Binomial struct {
@@ -26,9 +28,9 @@ func (bin *Binomial) Sample(r *rand.Rand) (x int64) {
 func (bin *Binomial) Density(x int64) float64 {
   n := bin.n
   p := bin.bern.p
-  return float64(Choose(n, x)) * math.Pow(p, float64(x)) * math.Pow(1.0 - p, float64(n - x))
+  return float64(utils.Choose(n, x)) * math.Pow(p, float64(x)) * math.Pow(1.0 - p, float64(n - x))
 }
 
 func (bin *Binomial) LogDensity(x int64) float64 {
-  return float64(x) * math.Log(bin.bern.p) + float64(bin.n - x) * math.Log(1.0 - bin.bern.p) + Lchoose(bin.n, x)
+  return float64(x) * math.Log(bin.bern.p) + float64(bin.n - x) * math.Log(1.0 - bin.bern.p) + utils.Lchoose(bin.n, x)
 }

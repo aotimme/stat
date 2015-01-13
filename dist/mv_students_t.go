@@ -5,6 +5,7 @@ import (
   "math/rand"
 
   "github.com/skelterjohn/go.matrix"
+  "github.com/aotimme/stat/utils"
 )
 
 type MVStudentsT struct {
@@ -46,7 +47,7 @@ func (mvt *MVStudentsT) LogDensity(x []float64) float64 {
       quad += (x[i] - mvt.mu[i]) * covInv.Get(i, j) * (x[j] - mvt.mu[j])
     }
   }
-  norm := LogGamma((mvt.dof + pf) / 2) - LogGamma(mvt.dof / 2) - pf * math.Log(mvt.dof) / 2 - pf * math.Log(math.Pi) / 2 - mvt.mvnorm.getLogDetCov() / 2
+  norm := utils.LogGamma((mvt.dof + pf) / 2) - utils.LogGamma(mvt.dof / 2) - pf * math.Log(mvt.dof) / 2 - pf * math.Log(math.Pi) / 2 - mvt.mvnorm.getLogDetCov() / 2
   return norm - (mvt.dof + pf) / 2 * math.Log(1.0 + quad / mvt.dof)
 }
 

@@ -3,6 +3,8 @@ package dist
 import (
   "math"
   "math/rand"
+
+  "github.com/aotimme/stat/utils"
 )
 
 type Poisson struct {
@@ -26,7 +28,7 @@ func (poisson *Poisson) Sample(r *rand.Rand) int64 {
 
 func (poisson *Poisson) LogDensity(k int64) float64 {
   kf := float64(k)
-  return kf * math.Log(poisson.lambda) - poisson.lambda - LogGamma(kf + 1.0)
+  return kf * math.Log(poisson.lambda) - poisson.lambda - utils.LogGamma(kf + 1.0)
 }
 
 func (poisson *Poisson) Density(k int64) float64 {
