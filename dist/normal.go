@@ -28,3 +28,7 @@ func (n *Normal) LogDensity(x float64) float64 {
 func (n *Normal) Density(x float64) float64 {
   return math.Exp(n.LogDensity(x))
 }
+
+func (n *Normal) CDF(x float64) float64 {
+  return phi((x - n.mean) / math.Sqrt(n.variance))
+}

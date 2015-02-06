@@ -15,12 +15,7 @@ func NewExponential(lambda float64) (exp Exponential) {
 }
 
 func (exp *Exponential) Sample(r *rand.Rand) float64 {
-  var s float64
-  if r == nil {
-    s = rand.ExpFloat64()
-  } else {
-    s = r.ExpFloat64()
-  }
+  s := exponential(r)
   return s / exp.lambda
 }
 
