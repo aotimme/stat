@@ -26,3 +26,25 @@ than relying on BLAS/LAPACK implementations (see
 [gonum/matrix/mat64](https://github.com/gonum/matrix) as an example). However,
 it is the most complete and straightforward matrix library for golang I have
 thus far come across.
+
+TODO
+----
+
+Organization:
+* Use Interfaces:
+  * ContinuousUnivariateDistribution
+  * DiscreteUnivariateDistribution
+  * ContinuousMultivariateDistribution
+  * DiscreteMultivariateDistribution (eg...)
+
+Distributions:
+* LogNormal
+* BetaPrime
+* Logarithmic
+
+Methods:
+* Mean / Mode / Variance
+* Moment-generating function
+* Characteristic function (?) - imaginary numbers...
+* Probability generating function (?)
+* Laplace transform (?)
