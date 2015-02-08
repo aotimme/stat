@@ -20,14 +20,16 @@ func LogDet(m *matrix.DenseMatrix) (logdet float64) {
   return
 }
 
-// uses `math.Lgamma`, but returns just a float, without the sign
+// LogGamma uses `math.Lgamma`, but returns just a float, without the sign
+// (assumes the variable passed in is positive)
 func LogGamma(x float64) float64 {
-  lgamma, sign := math.Lgamma(x)
-  if sign == 1 {
-    return lgamma
-  } else {
-    return -lgamma
-  }
+  lgamma, _ := math.Lgamma(x)
+  return lgamma
+  //if sign == 1 {
+  //  return lgamma
+  //} else {
+  //  return -lgamma
+  //}
 }
 
 // http://en.wikipedia.org/wiki/Multivariate_gamma_function
