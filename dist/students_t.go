@@ -3,8 +3,6 @@ package dist
 import (
   "math"
   "math/rand"
-
-  "github.com/aotimme/stat/utils"
 )
 
 type StudentsT struct {
@@ -23,8 +21,8 @@ func (t *StudentsT) Sample(r *rand.Rand) float64 {
 }
 
 func (t *StudentsT) LogDensity(x float64) float64 {
-  a := utils.LogGamma((t.dof + 1) / 2)
-  b := utils.LogGamma(t.dof / 2) + math.Log(math.Pi * t.dof) / 2
+  a := lgamma((t.dof + 1) / 2)
+  b := lgamma(t.dof / 2) + math.Log(math.Pi * t.dof) / 2
   c := (t.dof + 1) / 2 * math.Log(1 + x * x / t.dof)
   return a - b - c
 }

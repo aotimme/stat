@@ -38,9 +38,7 @@ Organization:
   * DiscreteMultivariateDistribution (eg...)
 
 Distributions:
-* LogNormal
 * BetaPrime
-* Logarithmic
 
 Methods:
 * Mean / Mode / Variance

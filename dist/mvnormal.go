@@ -6,7 +6,6 @@ import (
   "fmt"
 
   "github.com/skelterjohn/go.matrix"
-  "github.com/aotimme/stat/utils"
 )
 
 type MVNormal struct {
@@ -21,7 +20,7 @@ type MVNormal struct {
 
 func (norm *MVNormal) getLogDetCov() float64 {
   if !norm.hasComputedLogDetCov {
-    norm.logDetCov = utils.LogDet(norm.cov)
+    norm.logDetCov = logdet(norm.cov)
     norm.hasComputedLogDetCov = true
   }
   return norm.logDetCov

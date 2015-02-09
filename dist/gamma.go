@@ -3,8 +3,6 @@ package dist
 import (
   "math/rand"
   "math"
-
-  "github.com/aotimme/stat/utils"
 )
 
 type Gamma struct {
@@ -56,7 +54,7 @@ func (gamma *Gamma) Sample(r *rand.Rand) float64 {
 }
 
 func (g *Gamma) LogDensity(x float64) float64 {
-  return g.alpha * math.Log(g.beta) - utils.LogGamma(g.alpha) + (g.alpha - 1) * math.Log(x) - g.beta * x
+  return g.alpha * math.Log(g.beta) - lgamma(g.alpha) + (g.alpha - 1) * math.Log(x) - g.beta * x
 }
 
 func (g *Gamma) Density(x float64) float64 {

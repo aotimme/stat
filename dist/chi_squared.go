@@ -3,8 +3,6 @@ package dist
 import (
   "math"
   "math/rand"
-
-  "github.com/aotimme/stat/utils"
 )
 
 type ChiSquared struct {
@@ -26,7 +24,7 @@ func (x *ChiSquared) Sample(r *rand.Rand) (s float64) {
 
 func (x *ChiSquared) LogDensity(v float64) float64 {
   doff := float64(x.dof)
-  norm := doff * math.Log(2.0) / 2 + utils.LogGamma(doff / 2)
+  norm := doff * math.Log(2.0) / 2 + lgamma(doff / 2)
   return (doff / 2 - 1) * math.Log(v) - v / 2 - norm
 }
 

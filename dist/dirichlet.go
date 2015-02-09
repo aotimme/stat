@@ -3,8 +3,6 @@ package dist
 import (
   "math/rand"
   "math"
-
-  "github.com/aotimme/stat/utils"
 )
 
 type Dirichlet struct {
@@ -46,9 +44,9 @@ func (dir *Dirichlet) getSumAlpha() float64 {
 func (dir *Dirichlet) getLogNormalizer() float64 {
   if dir.logNormalizer == 0.0 {
     for _, a := range dir.alpha {
-      dir.logNormalizer += utils.LogGamma(a)
+      dir.logNormalizer += lgamma(a)
     }
-    dir.logNormalizer -= utils.LogGamma(dir.getSumAlpha())
+    dir.logNormalizer -= lgamma(dir.getSumAlpha())
   }
   return dir.logNormalizer
 }

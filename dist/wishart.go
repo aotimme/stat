@@ -6,7 +6,6 @@ import (
   "fmt"
 
   "github.com/skelterjohn/go.matrix"
-  "github.com/aotimme/stat/utils"
 )
 
 
@@ -46,7 +45,7 @@ func (wish *Wishart) LogDensity(X *matrix.DenseMatrix) (d float64) {
 
   // numerator:
   // |X|^{(n-p-1)/2}
-  d = (nf - pf - 1.0) * utils.LogDet(X) / 2.0
+  d = (nf - pf - 1.0) * logdet(X) / 2.0
   covInv := wish.norm.getInverseCovariance()
   // exp(-V^{-1} X / 2)
   tmp, err := covInv.TimesDense(X)
@@ -64,7 +63,7 @@ func (wish *Wishart) LogDensity(X *matrix.DenseMatrix) (d float64) {
   // |V|^{n/2}
   d -= nf * wish.norm.getLogDetCov() / 2.0
   // \Gamma_p(n/2)
-  d -= utils.LogMvGamma(nf / 2.0, int64(p))
+  d -= lmvgamma(nf / 2.0, int64(p))
 
   return
 }
