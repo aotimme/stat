@@ -1,6 +1,7 @@
 package dist
 
 import (
+  "math"
   "math/rand"
 
   "github.com/skelterjohn/go.matrix"
@@ -28,4 +29,14 @@ func (niw *NormalInverseWishart) Sample(r *rand.Rand) (mean []float64, cov *matr
   return mean, cov
 }
 
-// TODO: Density and LogDensity
+func (niw *NormalInverseWishart) LogDensity(mean []float64, cov *matrix.DenseMatrix) float64 {
+  liw := niw.iwish.LogDensity(cov)
+  // TODO: slow...
+  covCopy := cov.Copy()
+  mvn := NewMVNormal(mean, covCopy)
+  return liw + mvn.LogDensity(mean)
+}
+
+func (niw *NormalInverseWishart) Density(mean []float64, cov *matrix.DenseMatrix) float64 {
+  return math.Exp(niw.LogDensity(mean, cov))
+}

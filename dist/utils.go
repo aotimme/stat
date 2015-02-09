@@ -97,6 +97,14 @@ func logdet(m *matrix.DenseMatrix) (ld float64) {
   return
 }
 
+func logit(p float64) float64 {
+  return math.Log(p) - math.Log(1.0 - p)
+}
+
+func expit(x float64) float64 {
+  return 1.0 / (1.0 + math.Exp(-x))
+}
+
 func RejectionSample(r *rand.Rand, targetLogPdf func(float64) float64, sourceLogPdf func(float64) float64, source func(*rand.Rand) float64, K float64) float64 {
   x := source(r)
   for math.Log(uniform(r)) >= targetLogPdf(x) - sourceLogPdf(x) - math.Log(K) {

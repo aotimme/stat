@@ -17,7 +17,7 @@ func NewGamma(alpha, beta float64) (gamma Gamma) {
 }
 
 func (gamma *Gamma) Sample(r *rand.Rand) float64 {
-  // TODO: rejection sample if alpha < 0.75
+  // rejection sample if alpha < 0.75
   if gamma.alpha < 0.75 {
     exp := NewExponential(gamma.beta)
     return RejectionSample(r, gamma.Density, exp.Density, exp.Sample, 1.0)
