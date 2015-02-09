@@ -12,6 +12,11 @@ type Categorical struct {
 
 func NewCategorical(p []float64) (cat Categorical) {
   cat.p = p
+  return
+}
+
+func NewCategoricalUnnormalized(p []float64) (cat Categorical) {
+  cat.p = p
   sum := 0.0
   for _, elem := range p {
     sum += elem

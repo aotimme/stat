@@ -16,6 +16,12 @@ func NewMultinomial(n int64, p []float64) (mult Multinomial) {
   return
 }
 
+func NewMultinomialUnnormalized(n int64, p []float64) (mult Multinomial) {
+  mult.n = n
+  mult.cat = NewCategoricalUnnormalized(p)
+  return
+}
+
 func (mult *Multinomial) Sample(r *rand.Rand) (s []int64) {
   s = make([]int64, len(mult.cat.p))
   for i := int64(0); i < mult.n; i++ {
