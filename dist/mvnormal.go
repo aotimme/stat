@@ -38,6 +38,7 @@ func (norm *MVNormal) getChol() *matrix.DenseMatrix {
     if err != nil {
       fmt.Printf("cov = %v\n", norm.cov)
       fmt.Printf("NOT SPD (det = %v)\n", norm.cov.Det())
+      fmt.Printf("NOT SPD (symmetric? = %v)\n", norm.cov.Symmetric())
       panic(err)
     }
     norm.chol = chol

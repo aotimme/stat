@@ -101,4 +101,17 @@ func (pg *PolyaGamma) Sample(r *rand.Rand) float64 {
   }
 }
 
+func (pg *PolyaGamma) SampleTruncatedSum(truncation int, r *rand.Rand) float64 {
+  gam := NewGamma(pg.b, 1.0)
+  x := 0.0
+  pisq := math.Pi * math.Pi
+  zsq := pg.z * pg.z
+  for k := 0; k < truncation; k++ {
+    k64 := float64(k + 1)
+    gk := gam.Sample(r)
+    x += gk / (math.Pow(k64 - 0.5, 2.0) + zsq / (4.0 * pisq))
+  }
+  return x / (2.0 * pisq)
+}
+
 // No LogDensity...

@@ -55,3 +55,11 @@ func (cat *Categorical) LogDensity(x int64) float64 {
   }
   return math.Log(cat.p[int(x)])
 }
+
+func (cat *Categorical) Mean() float64 {
+  sum := 0.0
+  for i, p := range cat.p {
+    sum += p * float64(i)
+  }
+  return sum
+}

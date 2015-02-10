@@ -10,47 +10,34 @@ type Gamma struct {
   beta float64
 }
 
-func NewGamma(alpha, beta float64) (gamma Gamma) {
-  gamma.alpha = alpha
-  gamma.beta = beta
+func NewGamma(alpha, beta float64) (self Gamma) {
+  self.alpha = alpha
+  self.beta = beta
   return
 }
 
-func (gamma *Gamma) Sample(r *rand.Rand) float64 {
-  // rejection sample if alpha < 0.75
-  if gamma.alpha < 0.75 {
-    exp := NewExponential(gamma.beta)
-    return RejectionSample(r, gamma.Density, exp.Density, exp.Sample, 1.0)
+func (self *Gamma) Sample(r *rand.Rand) float64 {
+  // See: http://www.hongliangjie.com/2012/12/19/how-to-generate-gamma-random-variables/
+  // Marsaglia and Tsang's Method (gsl implementation)
+  if self.alpha <= 1.0 {
+    tmpGam := NewGamma(self.alpha + 1.0, self.beta)
+    return tmpGam.Sample(r) * math.Pow(uniform(r), 1.0 / self.alpha)
   }
 
-  // Tadikamalla ACM '73
-  // From https://code.google.com/p/gostat/source/browse/stat/gamma.go
-  a := gamma.alpha - 1
-  b := 0.5 + 0.5 * math.Sqrt(4 * gamma.alpha - 3)
-  c := a * (1 + b) / b
-  d := (b - 1) / (a * b)
-  s := a / b
-  p := 1.0 / (2 - math.Exp(-s))
-  var x, y float64
-  for i := 1; ; i++ {
+  d := self.alpha - 1.0 / 3.0
+  c := 1.0 / (3.0 * math.Sqrt(d))
+  var x float64
+  for {
+    z := stdnormal(r)
     u := uniform(r)
-
-    if u > p {
-      var e float64
-      for e = -math.Log((1 - u) / (1 - p)); e > s; e = e - a/b {
-      }
-      x = a - b*e
-      y = a - x
-    } else {
-      x = a - b*math.Log(u/p)
-      y = x - a
-    }
-    u2 := uniform(r)
-    if math.Log(u2) <= a * math.Log(d * x) - x + y / b + c {
+    v := 1.0 + c * z
+    v = v * v * v
+    if z > -1.0 / c && math.Log(u) < 0.5 * z * z + d * (1.0 - v + math.Log(v)) {
+      x = d * v
       break
     }
   }
-  return x / gamma.beta
+  return x / self.beta
 }
 
 func (g *Gamma) LogDensity(x float64) float64 {

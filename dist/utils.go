@@ -107,7 +107,8 @@ func expit(x float64) float64 {
 
 func RejectionSample(r *rand.Rand, targetLogPdf func(float64) float64, sourceLogPdf func(float64) float64, source func(*rand.Rand) float64, K float64) float64 {
   x := source(r)
-  for math.Log(uniform(r)) >= targetLogPdf(x) - sourceLogPdf(x) - math.Log(K) {
+  logk := math.Log(K)
+  for math.Log(uniform(r)) >= targetLogPdf(x) - sourceLogPdf(x) - logk {
     x = source(r)
   }
   return x
