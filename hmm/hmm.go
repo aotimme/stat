@@ -161,16 +161,16 @@ func Viterbi(y []int, P, E [][]float64, nu []float64) (vit []int) {
   }
   for t := 1; t < N; t++ {
     for k := 0; k < K; k++ {
-      maxlogprob := d[t-1][0] + math.Log(P[0][k]) + math.Log(E[0][y[t]])
+      maxlogprob := d[t-1][0] + math.Log(P[0][k])
       whichmax := 0
       for j := 1; j < K; j++ {
-        logprob := d[t-1][j] + math.Log(P[j][k]) + math.Log(E[j][y[t]])
+        logprob := d[t-1][j] + math.Log(P[j][k])
         if logprob > maxlogprob {
           maxlogprob = logprob
           whichmax = j
         }
       }
-      d[t][k] = maxlogprob
+      d[t][k] = maxlogprob + math.Log(E[k][y[t]])
       f[t][k] = whichmax
     }
   }
